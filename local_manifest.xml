@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<manifest>
+	<project path="packages/apps/RemoteDroidGuard" name="microg/android_packages_apps_RemoteDroidGuard" remote="github" revision="master" />
+	<project path="vendor/lge" name="TheMuppets/proprietary_vendor_lge" remote="github" revision="cm-14.1" />
+</manifest>
