@@ -1,10 +1,5 @@
-Index: app/src/main/java/com/cyanogenmod/setupwizard/LineageSettingsActivity.java
-IDEA additional info:
-Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
-<+>UTF-8
-===================================================================
---- app/src/main/java/com/cyanogenmod/setupwizard/LineageSettingsActivity.java	(date 1496673680000)
-+++ app/src/main/java/com/cyanogenmod/setupwizard/LineageSettingsActivity.java	(revision )
+--- src/com/cyanogenmod/setupwizard/LineageSettingsActivity.java
++++ src/com/cyanogenmod/setupwizard/LineageSettingsActivity.java
 @@ -23,6 +23,7 @@
  import static com.cyanogenmod.setupwizard.SetupWizardApp.KEY_SEND_METRICS;
  
