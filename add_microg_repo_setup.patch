@@ -1,0 +1,38 @@
+Index: app/src/main/java/com/cyanogenmod/setupwizard/LineageSettingsActivity.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/com/cyanogenmod/setupwizard/LineageSettingsActivity.java	(date 1496673680000)
++++ app/src/main/java/com/cyanogenmod/setupwizard/LineageSettingsActivity.java	(revision )
+@@ -23,6 +23,7 @@
+ import static com.cyanogenmod.setupwizard.SetupWizardApp.KEY_SEND_METRICS;
+ 
+ import android.app.Activity;
++import android.content.ComponentName;
+ import android.content.Context;
+ import android.content.Intent;
+ import android.content.res.ThemeConfig;
+@@ -52,6 +53,7 @@
+ import cyanogenmod.providers.CMSettings;
+ 
+ public class LineageSettingsActivity extends BaseSetupWizardActivity {
++    private boolean isMicrogAsked = false;
+ 
+     public static final String TAG = LineageSettingsActivity.class.getSimpleName();
+ 
+@@ -191,6 +193,14 @@
+         mPrivacyGuard = (CheckBox) findViewById(R.id.privacy_guard_checkbox);
+         mPrivacyGuard.setChecked(CMSettings.Secure.getInt(getContentResolver(),
+                 CMSettings.Secure.PRIVACY_GUARD_DEFAULT, 0) == 1);
++
++        if(!isMicrogAsked) {
++            isMicrogAsked = true;
++            Intent i = new Intent(Intent.ACTION_VIEW);
++            i.setComponent(ComponentName.unflattenFromString("org.fdroid.fdroid/org.fdroid.fdroid.views.ManageReposActivity"));
++            i.setData(Uri.parse(microg_repo_uri));
++            startActivity(i);
++        }
+     }
+ 
+     @Override
