@@ -1,5 +1,6 @@
---- src/com/cyanogenmod/setupwizard/LineageSettingsActivity.java
-+++ src/com/cyanogenmod/setupwizard/LineageSettingsActivity.java
+diff --git a/src/com/cyanogenmod/setupwizard/LineageSettingsActivity.java b/src/com/cyanogenmod/setupwizard/LineageSettingsActivity.java
+--- a/src/com/cyanogenmod/setupwizard/LineageSettingsActivity.java
++++ b/src/com/cyanogenmod/setupwizard/LineageSettingsActivity.java
 @@ -23,6 +23,7 @@
  import static com.cyanogenmod.setupwizard.SetupWizardApp.KEY_SEND_METRICS;
  
@@ -25,9 +26,7 @@
 +            isMicrogAsked = true;
 +            Intent i = new Intent(Intent.ACTION_VIEW);
 +            i.setComponent(ComponentName.unflattenFromString("org.fdroid.fdroid/org.fdroid.fdroid.views.ManageReposActivity"));
-+            i.setData(Uri.parse(microg_repo_uri));
++            i.setData(Uri.parse("https://microg.org/fdroid/repo?fingerprint=9BD06727E62796C0130EB6DAB39B73157451582CBD138E86C468ACC395D14165"));
 +            startActivity(i);
 +        }
      }
- 
-     @Override
