@@ -17,4 +17,7 @@
 	<remove-project name="platform/prebuilts/go/darwin-x86" />
 	<remove-project name="platform/prebuilts/ninja/darwin-x86" />
 	<remove-project name="platform/prebuilts/python/darwin-x86/2.7.5" />
+	
+	<remove-project name="LineageOS/lineageos_updater" />
+	<remove-project name="LineageOS/android_packages_apps_CMUpdater" />
 </manifest>
