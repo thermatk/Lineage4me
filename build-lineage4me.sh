@@ -87,7 +87,7 @@ patch -p1 --no-backup-if-mismatch < android_frameworks_base-N.patch
 rm android_frameworks_base-N.patch
 cd ../..
 
-microg repo setupwizard patch
+# microg repo setupwizard patch
 cd packages/apps/SetupWizard
 wget https://raw.githubusercontent.com/thermatk/Lineage4me/master/add_microg_repo_setup.patch
 patch -p1 --no-backup-if-mismatch < add_microg_repo_setup.patch
@@ -103,10 +103,10 @@ PRODUCT_PACKAGES += \\
 EOT
 
 # kill some surely useless binaries, like RCS messaging or Fi
-# sed -i -e '/RCSBootstraputil \\/d' -e '/RcsImsBootstraputil \\/d' -e '/Tycho \\/d' -e '/rcsimssettings \\/d' \
-#	-e '/rcsservice/d' -e '/GCS \\/d' -e '/HotwordEnrollment \\/d' \
-#	-e '/DMConfigUpdate \\/d' -e '/DMService \\/d' -e '/SprintDM \\/d' vendor/lge/bullhead/bullhead-vendor.mk
-# sed -i -e 's/qcrilhook \\/qcrilhook/g' vendor/lge/bullhead/bullhead-vendor.mk
+sed -i -e '/RCSBootstraputil \\/d' -e '/RcsImsBootstraputil \\/d' -e '/Tycho \\/d' -e '/rcsimssettings \\/d' \
+	-e '/rcsservice/d' -e '/GCS \\/d' -e '/HotwordEnrollment \\/d' \
+	-e '/DMConfigUpdate \\/d' -e '/DMService \\/d' -e '/SprintDM \\/d' vendor/lge/bullhead/bullhead-vendor.mk
+sed -i -e 's/qcrilhook \\/qcrilhook/g' vendor/lge/bullhead/bullhead-vendor.mk
     
 # prepare for build
 source build/envsetup.sh
