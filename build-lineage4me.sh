@@ -47,6 +47,20 @@ fi
 # ./extract-files.sh
 # cd ../../..
 
+
+# include microg and fdroid prebuilts
+# https://microg.org/download.html
+rm -rf packages/apps/FOSS
+mkdir -p packages/apps/FOSS
+cd packages/apps/FOSS
+wget https://raw.githubusercontent.com/thermatk/Lineage4me/master/AdditionalAppsAndroid.mk -O Android.mk
+wget https://f-droid.org/repo/org.fdroid.fdroid_103250.apk -O FDroid.apk
+wget https://microg.org/fdroid/repo/com.google.android.gms-10545451.apk -O GmsCore.apk
+wget https://microg.org/fdroid/repo/com.google.android.gsf-8.apk -O GsfProxy.apk
+wget https://microg.org/fdroid/repo/com.android.vending-16.apk -O FakeStore.apk
+wget https://microg.org/fdroid/repo/org.microg.gms.droidguard-14.apk -O RemoteDroidGuard.apk
+cd ../../..
+
 # sync it all
 source build/envsetup.sh
 make clean
@@ -70,7 +84,7 @@ mkdir -p ~/.android-certs
 for x in releasekey platform shared media; do
 	if ls ~/.android-certs/$x* 1> /dev/null 2>&1; then
 		# already there
-		echo "Second+ run"
+		echo "Second+ run, certs already generated"
 	else
 		./development/tools/make_key ~/.android-certs/$x "$subject";
 	fi
@@ -99,6 +113,10 @@ cat <<EOT >> vendor/lge/bullhead/bullhead-vendor.mk
 # OTHER PACKAGES
 PRODUCT_PACKAGES += \\
    RemoteDroidGuard \\
+   GmsCore \\
+   GsfProxy \\
+   FakeStore \\
+   FDroid \\
    FDroidPrivilegedExtension
 EOT
 
