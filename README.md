@@ -2,6 +2,9 @@
 
 A script to build LineageOS for Nexus 5X(bullhead) from source. 
 
+## Usage
+Just download build-lineage4me.sh, read and adjust for your needs and execute
+
 ## Features
 - [Signing](https://wiki.lineageos.org/signing_builds.html), to pass SafetyNet
 - Vendor blobs from [TheMuppets repo](https://github.com/TheMuppets/proprietary_vendor_lge)
