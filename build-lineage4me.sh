@@ -35,7 +35,7 @@ if ls .repo/manifest.xml 1> /dev/null 2>&1; then
 else
 	repo init -u https://github.com/LineageOS/android.git -b cm-14.1
 
-	# add remotedroidguard and binaries
+	# add FDroidPrivilegedExtension, substratum interfacer and vendor binaries
 	mkdir .repo/local_manifests/
 	wget https://raw.githubusercontent.com/thermatk/Lineage4me/master/local_manifest.xml
 	mv local_manifest.xml .repo/local_manifests/local_manifest.xml
@@ -67,6 +67,42 @@ make clean
 rm -rf out/
 repo sync
 repo forall -vc "git reset --hard"
+
+# merge substratum
+cd frameworks/base
+git pull https://github.com/LineageOMS/android_frameworks_base cm-14.1
+cd ../..
+cd frameworks/native
+git pull https://github.com/LineageOMS/android_frameworks_native cm-14.1
+cd ../..
+cd packages/apps/Contacts
+git pull https://github.com/LineageOMS/android_packages_apps_Contacts cm-14.1
+cd ../../..
+cd packages/apps/ContactsCommon
+git pull https://github.com/LineageOMS/android_packages_apps_ContactsCommon cm-14.1
+cd ../../..
+cd packages/apps/Dialer
+git pull https://github.com/LineageOMS/android_packages_apps_Dialer cm-14.1
+cd ../../..
+cd packages/apps/ExactCalculator
+git pull https://github.com/LineageOMS/android_packages_apps_ExactCalculator cm-14.1
+cd ../../..
+cd packages/apps/PackageInstaller
+git pull https://github.com/LineageOMS/android_packages_apps_PackageInstaller cm-14.1
+cd ../../..
+cd packages/apps/PhoneCommon
+git pull https://github.com/LineageOMS/android_packages_apps_PhoneCommon cm-14.1
+cd ../../..
+cd packages/apps/Settings
+git pull https://github.com/LineageOMS/android_packages_apps_Settings cm-14.1
+cd ../../..
+cd system/sepolicy
+git pull https://github.com/LineageOMS/android_system_sepolicy cm-14.1
+cd ../..
+cd vendor/cm
+git pull https://github.com/LineageOMS/android_vendor_cm cm-14.1
+cd ../..
+
 
 # root!
 export WITH_SU=true
@@ -117,7 +153,8 @@ PRODUCT_PACKAGES += \\
    GsfProxy \\
    FakeStore \\
    FDroid \\
-   FDroidPrivilegedExtension
+   FDroidPrivilegedExtension \\
+   ThemeInterfacer
 EOT
 
 # kill some surely useless binaries, like RCS messaging or Fi
