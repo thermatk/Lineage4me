@@ -55,8 +55,8 @@ rm -rf packages/apps/FOSS
 mkdir -p packages/apps/FOSS
 cd packages/apps/FOSS
 wget https://raw.githubusercontent.com/thermatk/Lineage4me/master/AdditionalAppsAndroid.mk -O Android.mk
-wget https://f-droid.org/repo/org.fdroid.fdroid_103250.apk -O FDroid.apk
-wget https://microg.org/fdroid/repo/com.google.android.gms-10545451.apk -O GmsCore.apk
+wget https://f-droid.org/repo/org.fdroid.fdroid_104050.apk -O FDroid.apk
+wget https://microg.org/fdroid/repo/com.google.android.gms-11059462.apk -O GmsCore.apk
 wget https://microg.org/fdroid/repo/com.google.android.gsf-8.apk -O GsfProxy.apk
 wget https://microg.org/fdroid/repo/com.android.vending-16.apk -O FakeStore.apk
 wget https://microg.org/fdroid/repo/org.microg.gms.droidguard-14.apk -O RemoteDroidGuard.apk
