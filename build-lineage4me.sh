@@ -26,8 +26,10 @@ mkdir -p android/lineage/
 cd android/lineage
 
 # get latest repo
+mkdir -p ~/bin
 curl https://storage.googleapis.com/git-repo-downloads/repo > ~/bin/repo
 chmod a+x ~/bin/repo
+export PATH=$PATH:$HOME/bin
 
 # init repo for LOS 14.1
 if ls .repo/manifest.xml 1> /dev/null 2>&1; then
@@ -126,7 +128,7 @@ sed -i -e '/RCSBootstraputil \\/d' -e '/RcsImsBootstraputil \\/d' -e '/Tycho \\/
 	-e '/rcsservice/d' -e '/GCS \\/d' -e '/HotwordEnrollment \\/d' \
 	-e '/DMConfigUpdate \\/d' -e '/DMService \\/d' -e '/SprintDM \\/d' vendor/lge/bullhead/bullhead-vendor.mk
 sed -i -e 's/qcrilhook \\/qcrilhook/g' vendor/lge/bullhead/bullhead-vendor.mk
-    
+
 # prepare for build
 source build/envsetup.sh
 breakfast bullhead
@@ -138,7 +140,7 @@ mka target-files-package dist
 croot
 ./build/tools/releasetools/sign_target_files_apks -o -d ~/.android-certs \
     out/dist/*-target_files-*.zip \
-    signed-target_files.zip    
+    signed-target_files.zip
 ./build/tools/releasetools/ota_from_target_files -k ~/.android-certs/releasekey \
     --block --backup=true \
     signed-target_files.zip \
