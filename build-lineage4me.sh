@@ -74,6 +74,7 @@ make clean
 rm -rf out/
 repo sync
 repo forall -vc "git reset --hard"
+source build/envsetup.sh
 
 # root!
 export WITH_SU=true
