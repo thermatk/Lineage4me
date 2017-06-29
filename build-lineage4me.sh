@@ -69,9 +69,14 @@ wget https://microg.org/fdroid/repo/org.microg.gms.droidguard-14.apk -O RemoteDr
 cd ../../..
 
 # sync it all
-source build/envsetup.sh
-make clean
-rm -rf out/
+if ls build/envsetup.sh 1> /dev/null 2>&1; then
+	# cleanup
+	echo "Second+ run, cleanup"
+
+	source build/envsetup.sh
+	make clean
+	rm -rf out/
+fi
 repo sync
 repo forall -vc "git reset --hard"
 source build/envsetup.sh
