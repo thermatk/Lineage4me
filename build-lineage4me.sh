@@ -21,6 +21,10 @@ else
 fi
 PATH="${PWD}/platform-tools:$PATH"
 
+# repo requires python2, Arch has 3
+virtualenv2 venv
+source venv/bin/activate
+
 # prepare structure
 mkdir -p android/lineage/
 cd android/lineage
