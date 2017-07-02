@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <manifest>
 	<remote name="fdroid" fetch="https://gitlab.com/fdroid/" />
-	
+
 	<project path="packages/apps/FDroidPrivilegedExtension" name="privileged-extension.git" remote="fdroid" revision="refs/tags/0.2.5" />
 	<project path="vendor/lge" name="TheMuppets/proprietary_vendor_lge" remote="github" revision="cm-14.1" />
 
@@ -16,7 +16,8 @@
 	<remove-project name="platform/prebuilts/go/darwin-x86" />
 	<remove-project name="platform/prebuilts/ninja/darwin-x86" />
 	<remove-project name="platform/prebuilts/python/darwin-x86/2.7.5" />
-	
+
 	<remove-project name="LineageOS/lineageos_updater" />
 	<remove-project name="LineageOS/android_packages_apps_CMUpdater" />
+	<remove-project name="LineageOS/android_packages_apps_Jelly" />
 </manifest>
