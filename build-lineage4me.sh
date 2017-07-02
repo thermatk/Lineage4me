@@ -25,15 +25,19 @@ PATH="${PWD}/platform-tools:$PATH"
 virtualenv2 venv
 source venv/bin/activate
 
+# get latest repo
+if ls ~/bin/repo 1> /dev/null 2>&1; then
+	export PATH=$PATH:$HOME/bin
+else
+	mkdir -p ~/bin
+	curl https://storage.googleapis.com/git-repo-downloads/repo > ~/bin/repo
+	chmod a+x ~/bin/repo
+	export PATH=$PATH:$HOME/bin
+fi
+
 # prepare structure
 mkdir -p android/lineage/
 cd android/lineage
-
-# get latest repo
-mkdir -p ~/bin
-curl https://storage.googleapis.com/git-repo-downloads/repo > ~/bin/repo
-chmod a+x ~/bin/repo
-export PATH=$PATH:$HOME/bin
 
 # init repo for LOS 14.1
 if ls .repo/manifest.xml 1> /dev/null 2>&1; then
@@ -77,19 +81,19 @@ if ls build/envsetup.sh 1> /dev/null 2>&1; then
 	make clean
 	rm -rf out/
 fi
-repo sync
+repo sync --force-sync
 repo forall -vc "git reset --hard"
 source build/envsetup.sh
 
-# root!
-export WITH_SU=true
+# root is replaced with Magisk
+# export WITH_SU=true
 
 # configure caching, jack fix
 mkdir -p ccache
 export CCACHE_DIR=${PWD}/ccache
 export USE_CCACHE=1
 prebuilts/misc/linux-x86/ccache/ccache -M 50G
-export ANDROID_JACK_VM_ARGS="-Dfile.encoding=UTF-8 -XX:+TieredCompilation -Xmx8G"
+export ANDROID_JACK_VM_ARGS="-Dfile.encoding=UTF-8 -XX:+TieredCompilation -Xmx4G"
 
 # generate keys for signing, if none found
 subject='/C=DE/ST=Munich/L=Munich/O=thermatkCustomBuilds/OU=SigningDept/CN=th-custom/emailAddress=thermatk@thermatk.com'
@@ -146,15 +150,32 @@ breakfast bullhead
 # build
 mka target-files-package dist
 
-# assemble and sign
+# sign
 croot
 ./build/tools/releasetools/sign_target_files_apks -o -d ~/.android-certs \
     out/dist/*-target_files-*.zip \
     signed-target_files.zip
+
+# magisk-script
+cat <<EOT > magisk-script
+package_extract_dir("magisk", "/tmp/magisk");
+run_program("/sbin/busybox", "unzip", "/tmp/magisk/magisk.zip", "META-INF/com/google/android/*", "-d", "/tmp/magisk");
+run_program("/sbin/busybox", "sh", "/tmp/magisk/META-INF/com/google/android/update-binary", "dummy", "1", "/tmp/magisk/magisk.zip");
+EOT
+
+# assemble zip + add magisk
 ./build/tools/releasetools/ota_from_target_files -k ~/.android-certs/releasekey \
-    --block --backup=true \
+    --block --backup=true --extra_script magisk-script \
     signed-target_files.zip \
     signed-ota_update.zip
+
+# add magisk beta(v.54e6a79) zip to zip
+mkdir -p magisk
+cd magisk
+wget "https://forum.xda-developers.com/attachment.php?attachmentid=4192170&d=1498316366" -O magisk.zip
+cd ..
+zip -g signed-ota_update.zip magisk/magisk.zip
+rm magisk/magisk.zip
 
 # get out and copy build
 mkdir -p ../../done
