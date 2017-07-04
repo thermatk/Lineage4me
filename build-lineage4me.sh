@@ -65,7 +65,6 @@ rm -rf packages/apps/FOSS
 mkdir -p packages/apps/FOSS
 cd packages/apps/FOSS
 wget https://raw.githubusercontent.com/thermatk/Lineage4me/master/AdditionalAppsAndroid.mk -O Android.mk
-wget https://f-droid.org/repo/org.fdroid.fdroid_104050.apk -O FDroid.apk
 wget https://microg.org/fdroid/repo/com.google.android.gms-11059462.apk -O GmsCore.apk
 wget https://microg.org/fdroid/repo/com.google.android.gsf-8.apk -O GsfProxy.apk
 wget https://microg.org/fdroid/repo/com.android.vending-16.apk -O FakeStore.apk
@@ -133,7 +132,6 @@ PRODUCT_PACKAGES += \\
    GmsCore \\
    GsfProxy \\
    FakeStore \\
-   FDroid \\
    FDroidPrivilegedExtension
 EOT
 
@@ -142,6 +140,15 @@ sed -i -e '/RCSBootstraputil \\/d' -e '/RcsImsBootstraputil \\/d' -e '/Tycho \\/
 	-e '/rcsservice/d' -e '/GCS \\/d' -e '/HotwordEnrollment \\/d' \
 	-e '/DMConfigUpdate \\/d' -e '/DMService \\/d' -e '/SprintDM \\/d' vendor/lge/bullhead/bullhead-vendor.mk
 sed -i -e 's/qcrilhook \\/qcrilhook/g' vendor/lge/bullhead/bullhead-vendor.mk
+
+# opt-out gmscore from doze
+cd vendor/lge/bullhead/proprietary
+wget https://raw.githubusercontent.com/thermatk/Lineage4me/master/google.xml
+cd ../../../..
+cat <<EOT >> vendor/lge/bullhead/bullhead-vendor.mk
+PRODUCT_COPY_FILES += \
+   vendor/lge/bullhead/proprietary/google.xml:system/etc/sysconfig/google.xml
+EOT
 
 # prepare for build
 source build/envsetup.sh
@@ -156,26 +163,57 @@ croot
     out/dist/*-target_files-*.zip \
     signed-target_files.zip
 
-# magisk-script
-cat <<EOT > magisk-script
+# magisk + additional apps
+cat <<EOT > zip-script
+ui_print("Installing apps to /data...");
+mount("ext4", "EMMC", "/dev/block/platform/soc.0/f9824900.sdhci/by-name/userdata", "/data", "");
+package_extract_dir("data", "/data");
+set_metadata_recursive("/data/app", "uid", 1000, "gid", 1000, "dmode", 0771, "fmode", 0644, "capabilities", 0x0, "selabel", "u:object_r:apk_data_file:s0");
 package_extract_dir("magisk", "/tmp/magisk");
 run_program("/sbin/busybox", "unzip", "/tmp/magisk/magisk.zip", "META-INF/com/google/android/*", "-d", "/tmp/magisk");
 run_program("/sbin/busybox", "sh", "/tmp/magisk/META-INF/com/google/android/update-binary", "dummy", "1", "/tmp/magisk/magisk.zip");
 EOT
 
-# assemble zip + add magisk
+# assemble zip + add magisk and apps
 ./build/tools/releasetools/ota_from_target_files -k ~/.android-certs/releasekey \
-    --block --backup=true --extra_script magisk-script \
+    --block --backup=true --extra_script zip-script \
     signed-target_files.zip \
     signed-ota_update.zip
+rm zip-script
 
-# add magisk beta(v.54e6a79) zip to zip
+# add magisk beta(c4377ed) zip to zip
 mkdir -p magisk
 cd magisk
-wget "https://forum.xda-developers.com/attachment.php?attachmentid=4192170&d=1498316366" -O magisk.zip
+wget "https://forum.xda-developers.com/attachment.php?attachmentid=4199816&d=1499018891" -O magisk.zip
 cd ..
 zip -g signed-ota_update.zip magisk/magisk.zip
-rm magisk/magisk.zip
+rm -rf magisk
+
+# Additional apps download
+mkdir -p data/app
+cd data/app
+mkdir -p org.videolan.vlc-1
+wget "https://nightlies.videolan.org/build/android-armv8a/VLC-Android-2.1.12-20170704-0058-ARMv8.apk" -O org.videolan.vlc-1/base.apk
+mkdir -p org.mozilla.firefox-1
+wget "https://download.mozilla.org/?product=fennec-latest&os=android&lang=multi" -O org.mozilla.firefox-1/base.apk
+mkdir -p org.mozilla.focus-1
+wget "https://github.com/mozilla-mobile/focus-android/releases/download/v1.0/Focus-1.0.apk" -O org.mozilla.focus-1/base.apk
+mkdir -p com.amaze.filemanager-1
+wget "https://f-droid.org/repo/com.amaze.filemanager_57.apk" -O com.amaze.filemanager-1/base.apk
+mkdir -p com.termux-1
+wget "https://f-droid.org/repo/com.termux_53.apk" -O com.termux-1/base.apk
+mkdir -p net.osmand.plus-1
+wget "https://f-droid.org/repo/net.osmand.plus_263.apk" -O net.osmand.plus-1/base.apk
+mkdir -p org.fdroid.fdroid-1
+wget "https://f-droid.org/repo/org.fdroid.fdroid_104050.apk" -O org.fdroid.fdroid-1/base.apk
+cd ../..
+# add to zip
+zip -r signed-ota_update.zip data/*
+rm -rf data
+# resign zip
+./build/tools/releasetools/sign_zip.py -k ~/.android-certs/releasekey signed-ota_update.zip resigned-ota_update.zip
+rm signed-ota_update.zip
+mv resigned-ota_update.zip signed-ota_update.zip
 
 # get out and copy build
 mkdir -p ../../done
