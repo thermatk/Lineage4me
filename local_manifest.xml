@@ -20,4 +20,5 @@
 	<remove-project name="LineageOS/lineageos_updater" />
 	<remove-project name="LineageOS/android_packages_apps_CMUpdater" />
 	<remove-project name="LineageOS/android_packages_apps_Jelly" />
+	<remove-project name="LineageOS/android_packages_apps_Eleven" />
 </manifest>
